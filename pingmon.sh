@@ -1,20 +1,29 @@
 #!/bin/bash
+# Exit Codes:
 # Exit 1: No arguments passed in.
-#Exit 2: Not a valid IP or resolvable hostname
-#Exit 3: Unknown error to do with the host command, used to resolve the hostname.
+# Exit 2: Not a valid IP or resolvable hostname
+# Exit 3: Unknown error to do with the host command, used to resolve the hostname.
 
+
+#--------------------------------------------------------------------------------
+# Global Variables
+#--------------------------------------------------------------------------------
 
 
 failed=0
-
 dnsserver="8.8.8.8"  # Specify DNS server
+
+#--------------------------------------------------------------------------------
+# Functions
+#--------------------------------------------------------------------------------
 
 
 function valid_ip()
 {
-#Checks to see if the IP entered is a valid IP address. This does not verify that it is the correct IP though.
-#Source: Mitch Frazier - https://www.linuxjournal.com/content/validating-ip-address-bash-script
-#To do: Check for hostname and resolve it to IP.
+# Checks to see if the IP entered is a valid IP address. This does not verify that it 
+# is the correct IP though.
+# Source: Mitch Frazier - https://www.linuxjournal.com/content/validating-ip-address-bash-script
+# To do: 
 
     local  ip=$1
     local  stat=1
@@ -30,12 +39,15 @@ function valid_ip()
     fi
     echo "Does not appear to be an IP, tryingt to resolve to an IP."
     return $stat
+#------------- End function valid_ip -------------
 }
-
 
 function get_ipaddr 
 {
-# function to get IP address
+# Function to convert the hostname to an IP using the host command.
+# Spurce: https://linuxhint.com/resolve_hostname_ip_address_bash_script/
+# To do:
+
   ip_address=""
   query_type="A"
   hostname="${1}." #added the . to make it a FQDN
@@ -45,13 +57,14 @@ function get_ipaddr
       # get ip address
       ip_address="$(host -t ${query_type} ${hostname} ${dnsserver}| awk '/has.*address/{print $NF; exit}')"
     else
-      echo "An unknown error has occured"
       exit 3
     fi
-# display ip
- echo $ip_address
+#------------- End function get_ipaddress -------------
 }
 
+#--------------------------------------------------------------------------------
+# End of Functions
+#--------------------------------------------------------------------------------
 
 
 if [ -z "$1" ]
@@ -65,7 +78,7 @@ if [ -z "$1" ]
 	    	echo "Valid IP: " $1
 	    else
 			address="$(get_ipaddr ${1})"
-			echo $1 " = " $address
+			echo $address
 			if [ "$?" -eq "0" ]; then
     			if [ -n "${address}" ]; then
     				echo "The adress of the Hostname ${1} is: $address"
