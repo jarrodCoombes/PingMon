@@ -32,18 +32,17 @@ if [ -z "$1" ]
 	else
 		if valid_ip $1 
 		then 
-	    	echo "Valid IP"
+	    	echo "Valid IP: " $1
 	    else
-			echo "Invalid IP. Exiting"
+			echo "Invalid IP: " $1 
+			echo "Exiting"
 			exit 1
     	fi
 fi
 
-echo $1
-
-while [ $failed -le 5 ]
+while [ $failed -le 4 ]
 do
-	if ping -c 1 $1 &> /dev/null
+	if ping -c 1 -t 1 $1 &> /dev/null
 		then
 		  # Ping is succesful
 		  echo "Ping Returned"
@@ -53,14 +52,9 @@ do
 		  # Ping Failed
 		  # echo $failed
 		  failed=$(( $failed + 1 ))
+		  echo "Failed: " $failed
    	fi
 
-	read -t 0.25 -N 1 input
-    if [[ $input = "q" ]] || [[ $input = "Q" ]]; then
-		# The following line is for the prompt to appear on a new line.
-        echo
-        break 
-    fi
 
 done
 failed=0
