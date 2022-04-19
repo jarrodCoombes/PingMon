@@ -4,5 +4,3 @@ A simple script to use Ping to monitor if a host is up and remoains up during th
  
 ##### Use
 pingmon x.x.x.x
-
-
